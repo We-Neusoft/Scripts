@@ -20,7 +20,7 @@ function rsync_call {
    set_status $1 -1
 
    case $3 in
-   0) rsync $1 $2 "--delete-delay" "$4"
+   0) rsync $1 $2 "--delete-delay $4"
       ;;
    1) rsync $1 $2 "$4"
       return
@@ -36,10 +36,6 @@ function rsync_call {
    fi
 }
 
-function rsync_rhel {
-   rsync_call $1 $2 $3 "--exclude=\"repomd.xml\""
-}
-
 function rsync_debian {
    rsync_call $1 $2 $3 "--exclude=\"*Packages*\" --exclude=\"*Sources*\" --exclude=\"*Release\""
 }
@@ -49,19 +45,22 @@ function rsync_common {
 }
 
 # centos
-#rsync_rhel centos mirrors.ustc.edu.cn::centos 1
-rsync_rhel centos msync.centos.org::CentOS 2
+rsync_common centos msync.centos.org::CentOS 0
 unset RESULT
 
 # epel
-rsync_rhel epel mirrors.ustc.edu.cn::fedora-epel 0
+rsync_common epel mirrors.ustc.edu.cn::fedora-epel 0
 if [ $RESULT -eq 0 ]; then
    /usr/bin/report_mirror > /dev/null
 fi
 unset RESULT
 
+# atomic
+rsync_common atomic www5.atomicorp.com::atomic 0 "--delete-excluded --exclude=fedora/"
+unset RESULT
+
 # repoforge
-rsync_rhel repoforge apt.sw.be::pub/freshrpms/pub/dag/ 0
+rsync_common repoforge apt.sw.be::pub/freshrpms/pub/dag/ 0
 unset RESULT
 
 # kali-images
