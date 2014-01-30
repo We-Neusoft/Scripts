@@ -91,6 +91,10 @@ unset RESULT
 rsync_common gentoo-portage rsync.us.gentoo.org::gentoo-portage 0
 unset RESULT
 
+# mariadb
+rsync_common mariadb rsync.osuosl.org::mariadb 0
+unset RESULT
+
 # pypi
 set_status pypi -1
 /usr/bin/scl enable python27 "bandersnatch mirror" 2> /dev/null
