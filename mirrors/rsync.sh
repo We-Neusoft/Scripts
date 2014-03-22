@@ -89,6 +89,10 @@ unset RESULT
 
 # gentoo-portage
 rsync_common gentoo-portage rsync.us.gentoo.org::gentoo-portage 0
+if [ $RESULT -eq 0 ]; then
+    /sbin/mksquashfs $ROOT/gentoo-portage/ $ROOT/gentoo-portage.sqsh -noappend
+    chmod 644 $ROOT/gentoo-portage.sqsh
+fi
 unset RESULT
 
 # mariadb
